@@ -28,12 +28,18 @@ export const business = {
     state: 'SP',
     postalCode: '17255-070',
   },
-  /** Coordenadas da oficina (vão para o JSON-LD). Preencher com as do Perfil da Empresa no Google. */
-  geo: null as { lat: number; lng: number } | null,
-  /** Busca pelo endereço. Quando houver Perfil da Empresa no Google, trocar `link` pelo link dele. */
+  /** Coordenadas do Perfil da Empresa no Google (vão para o JSON-LD). */
+  geo: { lat: -22.0785593, lng: -48.7370127 } as { lat: number; lng: number } | null,
+  /** Perfil da Empresa no Google ("Fornazieri Auto Eletrica"). */
   maps: {
-    link: 'https://www.google.com/maps/search/?api=1&query=Rua+Francisco+Munhoz+Cegarra%2C+415%2C+Vila+Maria%2C+Bariri+-+SP%2C+17255-070',
-    embed: 'https://www.google.com/maps?q=Rua+Francisco+Munhoz+Cegarra%2C+415%2C+Vila+Maria%2C+Bariri+-+SP%2C+17255-070&output=embed',
+    /** Abre direto a ficha da oficina (fotos, avaliações, botão de rotas). */
+    link: 'https://maps.google.com/?cid=10303707409692648735',
+    /** Rota até a oficina a partir da localização de quem clica. */
+    directions:
+      'https://www.google.com/maps/dir/?api=1&destination=Fornazieri+Auto+Eletrica%2C+Rua+Francisco+Munhoz+Cegarra%2C+415%2C+Bariri+-+SP',
+    /** Nome + endereço faz o embed mostrar o cartão da empresa, não só a rua. */
+    embed:
+      'https://maps.google.com/maps?q=Fornazieri+Auto+Eletrica%2C+Rua+Francisco+Munhoz+Cegarra%2C+415%2C+Bariri+-+SP&output=embed',
   },
   timeZone: 'America/Sao_Paulo',
 } as const;

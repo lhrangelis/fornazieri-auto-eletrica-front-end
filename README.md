@@ -35,7 +35,7 @@ Para alterar telefone, horário ou serviços, edite **apenas** `src/data/busines
 Os campos marcados com `MOCK` em `src/data/business.ts` são fictícios:
 
 - [x] endereço, CEP e cidade
-- [ ] coordenadas (`geo`) e link do Perfil da Empresa no Google
+- [x] coordenadas (`geo`) e link do Perfil da Empresa no Google
 - [ ] CNPJ, razão social e ano de fundação
 - [ ] confirmar o serviço "Freios"
 - [ ] domínio definitivo em `astro.config.mjs` e `public/robots.txt`
