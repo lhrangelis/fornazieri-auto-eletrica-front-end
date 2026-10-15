@@ -2,8 +2,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// TODO: trocar pelo domínio definitivo antes de publicar.
+// Endereço atual no Cloudflare. Trocar pelo domínio .com.br quando estiver ativo.
 export default defineConfig({
-  site: 'https://www.fornazieriautoeletrica.com.br',
+  site: 'https://fornazieriautoeletrica.lh-rissilb2.workers.dev',
   integrations: [sitemap()],
 });

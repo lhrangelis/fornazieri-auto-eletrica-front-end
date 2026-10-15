@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.fornazieriautoeletrica.com.br/sitemap-index.xml
+Sitemap: https://fornazieriautoeletrica.lh-rissilb2.workers.dev/sitemap-index.xml
