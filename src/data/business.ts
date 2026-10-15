@@ -18,27 +18,27 @@ export const business = {
     whatsapp: '5514988186461',
   },
   instagram: {
-    handle: 'fornazieriautoeletrica',
-    url: 'https://www.instagram.com/fornazieriautoeletrica/',
+    handle: 'fornazieri.autoeletrica',
+    url: 'https://www.instagram.com/fornazieri.autoeletrica/',
   },
   address: {
-    street: 'Rua Exemplo, 000', // MOCK
-    district: 'Centro', // MOCK
-    city: 'Cidade', // MOCK
+    street: 'Rua Francisco Munhoz Cegarra, 415',
+    district: 'Vila Maria',
+    city: 'Bariri',
     state: 'SP',
-    postalCode: '00000-000', // MOCK
+    postalCode: '17255-070',
   },
-  /** Coordenadas da oficina (vão para o JSON-LD). MOCK: preencher com as reais. */
+  /** Coordenadas da oficina (vão para o JSON-LD). Preencher com as do Perfil da Empresa no Google. */
   geo: null as { lat: number; lng: number } | null,
-  /** Link "Como chegar" e embed. MOCK: usar o link do Perfil da Empresa no Google. */
+  /** Busca pelo endereço. Quando houver Perfil da Empresa no Google, trocar `link` pelo link dele. */
   maps: {
-    link: 'https://www.google.com/maps/search/?api=1&query=Fornazieri+Auto+El%C3%A9trica',
-    embed: 'https://www.google.com/maps?q=Fornazieri+Auto+El%C3%A9trica&output=embed',
+    link: 'https://www.google.com/maps/search/?api=1&query=Rua+Francisco+Munhoz+Cegarra%2C+415%2C+Vila+Maria%2C+Bariri+-+SP%2C+17255-070',
+    embed: 'https://www.google.com/maps?q=Rua+Francisco+Munhoz+Cegarra%2C+415%2C+Vila+Maria%2C+Bariri+-+SP%2C+17255-070&output=embed',
   },
   timeZone: 'America/Sao_Paulo',
 } as const;
 
-export const fullAddress = `${business.address.street} — ${business.address.district}, ${business.address.city}/${business.address.state}`;
+export const fullAddress = `${business.address.street} — ${business.address.district}, ${business.address.city}/${business.address.state}, ${business.address.postalCode}`;
 
 export const waLink = (message = 'Olá! Gostaria de um orçamento.') =>
   `https://wa.me/${business.phone.whatsapp}?text=${encodeURIComponent(message)}`;
