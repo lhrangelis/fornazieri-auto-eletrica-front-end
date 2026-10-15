@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.webp';
+import { business } from '../data/business';
+
+interface Props {
+  size?: number;
+  eager?: boolean;
+}
+const { size = 48, eager = false } = Astro.props;
+---
+
+<a href="/#inicio" class="brand" aria-label={`${business.name} — início`}>
+  <Image src={logo} alt="" width={size} height={size} densities={[1, 2]} loading={eager ? 'eager' : 'lazy'} />
+  <span>
+    <b>FORNAZIERI</b>
+    <small>{business.tagline}</small>
+  </span>
+</a>
+
+<style>
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+  }
+  .brand img {
+    border-radius: 50%;
+  }
+  b {
+    font-family: var(--head);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 0.01em;
+    display: block;
+    line-height: 1;
+  }
+  small {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  @media (max-width: 560px) {
+    b {
+      font-size: 19px;
+    }
+  }
+</style>

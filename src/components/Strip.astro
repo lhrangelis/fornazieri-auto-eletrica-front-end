@@ -1,0 +1,95 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from '../data/icons';
+
+const items: { icon: IconName; title: string; text: string }[] = [
+  { icon: 'pulse', title: 'Diagnóstico preciso', text: 'Identificamos a causa antes de trocar peças.' },
+  { icon: 'bolt', title: 'Elétrica completa', text: 'Do motor de arranque ao painel.' },
+  { icon: 'truck', title: 'Leves e pesados', text: 'Carros, motos, caminhões e carretinhas.' },
+  { icon: 'chat', title: 'Orçamento rápido', text: 'Fale direto pelo WhatsApp.' },
+];
+---
+
+<div class="strip">
+  <ul class="wrap">
+    {
+      items.map((it) => (
+        <li class="it rv">
+          <Icon name={it.icon} size={26} />
+          <div>
+            <b>{it.title}</b>
+            <span>{it.text}</span>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .strip {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .wrap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .it {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 30px 24px;
+    border-left: 1px solid var(--line);
+  }
+  .it:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .it :global(svg.i) {
+    color: var(--red);
+    margin-top: 2px;
+  }
+  b {
+    display: block;
+    font-family: var(--head);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  span {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  @media (max-width: 920px) {
+    .wrap {
+      grid-template-columns: 1fr 1fr;
+    }
+    .it {
+      padding: 24px 16px;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+    .it:nth-child(-n + 2) {
+      border-top: 0;
+    }
+    .it:nth-child(odd) {
+      padding-left: 0;
+    }
+  }
+  @media (max-width: 560px) {
+    .wrap {
+      grid-template-columns: 1fr;
+    }
+    .it,
+    .it:nth-child(odd) {
+      padding: 20px 0;
+      border-top: 1px solid var(--line);
+    }
+    .it:first-child {
+      border-top: 0;
+    }
+  }
+</style>

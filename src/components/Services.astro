@@ -1,0 +1,224 @@
+---
+import Icon from './Icon.astro';
+import ExternalHint from './ExternalHint.astro';
+import { categories, services, waLink, type CategoryKey } from '../data/business';
+
+const counts = Object.fromEntries(
+  (Object.keys(categories) as CategoryKey[]).map((k) => [k, services.filter((s) => s.category === k).length]),
+);
+---
+
+<section class="light" id="servicos" aria-labelledby="servicos-title">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div>
+        <p class="eyebrow">Nossos serviços</p>
+        <h2 class="title" id="servicos-title">O que fazemos<br />pelo seu veículo</h2>
+      </div>
+      <p>
+        São {services.length} especialidades em elétrica, eletrônica, conforto e som. Escolha uma categoria ou fale com
+        a gente para um orçamento.
+      </p>
+    </div>
+
+    <div class="filters" role="group" aria-label="Filtrar serviços por categoria" data-filters hidden>
+      <button type="button" class="chip" data-f="all" aria-pressed="true">
+        Todos<span class="n" aria-hidden="true">{services.length}</span>
+      </button>
+      {
+        Object.entries(categories).map(([k, label]) => (
+          <button type="button" class="chip" data-f={k} aria-pressed="false">
+            {label}
+            <span class="n" aria-hidden="true">{counts[k]}</span>
+          </button>
+        ))
+      }
+    </div>
+    <p class="sr-only" aria-live="polite" data-filter-status></p>
+
+    <ul class="grid" data-grid>
+      {
+        services.map((s) => (
+          <li class="card rv" data-c={s.category}>
+            <div class="ic">
+              <Icon name={s.icon} size={24} />
+            </div>
+            <h3>{s.title}</h3>
+            <p>{s.description}</p>
+            <a
+              class="more"
+              href={waLink(`Olá! Gostaria de um orçamento de ${s.title.toLowerCase()}.`)}
+              target="_blank"
+              rel="noopener"
+              data-track="whatsapp"
+            >
+              Solicitar orçamento<span class="sr-only"> de {s.title}</span>
+              <ExternalHint />
+              <Icon name="arrow" size={16} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  const filters = document.querySelector<HTMLElement>('[data-filters]');
+  const grid = document.querySelector<HTMLElement>('[data-grid]');
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+
+  if (filters && grid && status) {
+    // Os filtros só aparecem com JS; sem JS a lista completa continua visível.
+    filters.hidden = false;
+    const chips = [...filters.querySelectorAll<HTMLButtonElement>('.chip')];
+    const cards = [...grid.querySelectorAll<HTMLElement>('.card')];
+
+    filters.addEventListener('click', (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('.chip');
+      if (!chip) return;
+      const f = chip.dataset.f;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = f === 'all' || card.dataset.c === f;
+        card.hidden = !show;
+        if (show) {
+          visible++;
+          card.classList.add('in');
+        }
+      });
+      status.textContent = `${visible} serviços exibidos`;
+    });
+  }
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .filters[hidden] {
+    display: none;
+  }
+  .chip {
+    border: 1px solid var(--ink-line);
+    background: #fff;
+    color: var(--ink);
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font: 500 14px var(--body);
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .chip:hover {
+    border-color: #c4c4cc;
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .chip .n {
+    opacity: 0.6;
+    margin-left: 6px;
+    font-size: 12px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .card {
+    background: var(--light-2);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    padding: 26px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 0;
+    background: var(--red);
+    transition: width 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -20px rgba(17, 17, 20, 0.25);
+    border-color: #d4d4da;
+  }
+  .card:hover::after {
+    width: 100%;
+  }
+  .ic {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #fdecec;
+    color: var(--red);
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+  }
+  h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .card p {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    flex: 1;
+  }
+  .more {
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink);
+  }
+  .more :global(svg.i) {
+    transition: transform 0.2s;
+  }
+  .more:hover {
+    color: var(--red-ink);
+  }
+  .more:hover :global(svg.i) {
+    transform: translateX(3px);
+  }
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (max-width: 920px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

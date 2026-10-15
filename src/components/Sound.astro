@@ -1,0 +1,123 @@
+---
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import ExternalHint from './ExternalHint.astro';
+import { waLink } from '../data/business';
+
+// Barras do equalizador geradas no build (determinísticas, sem JS no cliente).
+const bars = Array.from({ length: 22 }, (_, i) => {
+  const r = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+  const rand = Math.abs(r);
+  return {
+    height: Math.round(40 + Math.sin(i * 0.55) * 30 + rand * 30),
+    delay: (-rand * 1.4).toFixed(2),
+    duration: (1 + rand * 0.8).toFixed(2),
+  };
+});
+---
+
+<section class="som" id="som" aria-labelledby="som-title">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">Som automotivo</p>
+      <h2 class="title" id="som-title">Som e iluminação do jeito que você imagina</h2>
+      <p>
+        Instalação de som automotivo, módulos, alto-falantes, iluminação e chicote para carretinha. Projeto pensado para
+        o seu veículo, com acabamento limpo e fiação segura.
+      </p>
+      <ul class="list">
+        <li class="tag">Instalação de som</li>
+        <li class="tag">Multimídia</li>
+        <li class="tag">Iluminação</li>
+        <li class="tag">Carretinha</li>
+      </ul>
+      <a
+        class="btn btn-red cta"
+        href={waLink('Olá! Quero um orçamento de som automotivo.')}
+        target="_blank"
+        rel="noopener"
+        data-track="whatsapp"
+      >
+        <WhatsAppIcon />Orçar meu projeto de som<ExternalHint />
+      </a>
+    </div>
+    <div class="bars" aria-hidden="true">
+      {
+        bars.map((b) => (
+          <i style={`height:${b.height}%;animation-delay:${b.delay}s;animation-duration:${b.duration}s`} />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .som {
+    background: #060607;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 96px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .wrap {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 56px;
+    align-items: center;
+    position: relative;
+  }
+  .wrap > * {
+    min-width: 0;
+  }
+  h2 {
+    font-size: clamp(36px, 4.6vw, 58px);
+    margin: 14px 0 18px;
+  }
+  p {
+    color: var(--muted);
+    max-width: 520px;
+  }
+  .list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .cta {
+    margin-top: 32px;
+  }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 180px;
+    max-width: 100%;
+    justify-content: center;
+  }
+  .bars i {
+    display: block;
+    flex: 0 1 12px;
+    min-width: 4px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--red), #5a0509);
+    animation: eq 1.4s ease-in-out infinite;
+    transform-origin: bottom;
+  }
+  @keyframes eq {
+    0%,
+    100% {
+      transform: scaleY(0.35);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+  @media (max-width: 920px) {
+    .wrap {
+      grid-template-columns: 1fr;
+    }
+    .bars {
+      height: 120px;
+    }
+  }
+</style>

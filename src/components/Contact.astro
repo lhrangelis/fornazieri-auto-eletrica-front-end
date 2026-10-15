@@ -1,0 +1,324 @@
+---
+import Icon from './Icon.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import ExternalHint from './ExternalHint.astro';
+import { business, dayNames, fullAddress, telLink, waLink, weekHours } from '../data/business';
+import { formatRange } from '../lib/hours';
+
+const order = [1, 2, 3, 4, 5, 6, 0];
+---
+
+<section class="light" id="contato" aria-labelledby="contato-title">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div>
+        <p class="eyebrow">Horário e contato</p>
+        <h2 class="title" id="contato-title">Venha até a oficina</h2>
+      </div>
+      <p>
+        Atendemos de segunda a sábado em {business.address.city}/{business.address.state}. Para agilizar, mande uma
+        mensagem antes e já deixe seu horário combinado.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="panel rv">
+        <h3>Horário <span class="pill" data-open-pill hidden></span></h3>
+        <p class="hint">Horário de Brasília · fechado em feriados nacionais</p>
+        <ul class="hours">
+          {
+            order.map((d) => (
+              <li data-day={d} class:list={{ closed: !weekHours[d] }}>
+                <span>{dayNames[d]}</span>
+                <span>{formatRange(weekHours[d]).replace('–', ' – ')}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="panel rv">
+        <h3>Contato</h3>
+        <p class="hint">Atendimento por telefone e WhatsApp</p>
+        <ul class="contact-list">
+          <li>
+            <a href={waLink()} target="_blank" rel="noopener" data-track="whatsapp">
+              <span class="ic"><WhatsAppIcon size={22} /></span>
+              <span><small>WhatsApp</small><b>{business.phone.display}</b></span>
+              <ExternalHint />
+            </a>
+          </li>
+          <li>
+            <a href={telLink} data-track="phone">
+              <span class="ic"><Icon name="phone" /></span>
+              <span><small>Ligar agora</small><b>{business.phone.display}</b></span>
+            </a>
+          </li>
+          <li>
+            <a href={business.instagram.url} target="_blank" rel="noopener" data-track="instagram">
+              <span class="ic"><Icon name="instagram" /></span>
+              <span><small>Instagram</small><b>@{business.instagram.handle}</b></span>
+              <ExternalHint />
+            </a>
+          </li>
+          <li>
+            <a href={business.maps.link} target="_blank" rel="noopener" data-track="maps">
+              <span class="ic"><Icon name="pin" /></span>
+              <span>
+                <small>Endereço · como chegar</small>
+                <address><b>{fullAddress}</b></address>
+              </span>
+              <ExternalHint />
+            </a>
+          </li>
+        </ul>
+        <iframe
+          class="map"
+          src={business.maps.embed}
+          title={`Mapa com a localização da ${business.name}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta">
+  <div class="wrap">
+    <div class="cta-box rv">
+      <div>
+        <h2>Problema elétrico? Fale com quem entende.</h2>
+        <p>Mande uma mensagem e receba seu orçamento.</p>
+      </div>
+      <a class="btn" href={waLink()} target="_blank" rel="noopener" data-track="whatsapp">
+        <WhatsAppIcon />{business.phone.display}<ExternalHint />
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .grid > * {
+    min-width: 0;
+  }
+  .panel {
+    background: var(--light-2);
+    border: 1px solid var(--ink-line);
+    border-radius: 18px;
+    padding: 36px;
+  }
+  h3 {
+    font-size: 28px;
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .hint {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+  .pill {
+    font-family: var(--body);
+    font-style: normal;
+    text-transform: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #ecfdf3;
+    color: #15803d;
+    white-space: nowrap;
+  }
+  .pill[hidden] {
+    display: none;
+  }
+  .pill:global(.off) {
+    background: #fef2f2;
+    color: #b91c1c;
+  }
+  .hours li {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .hours li:last-child {
+    border-bottom: 0;
+  }
+  .hours li span:last-child {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .hours li.closed span:last-child {
+    color: var(--red-ink);
+  }
+  .hours li:global(.today) {
+    background: var(--ink);
+    color: #fff;
+    border-color: transparent;
+  }
+  .hours li:global(.today) span:first-child::after {
+    content: 'Hoje';
+    margin-left: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--red);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .hours li.closed:global(.today) span:last-child {
+    color: #ff8a8f;
+  }
+  .contact-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .contact-list a {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid var(--ink-line);
+    border-radius: 12px;
+    transition: 0.15s;
+  }
+  .contact-list a:hover {
+    border-color: var(--ink);
+  }
+  .contact-list a > span:not(.ic) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .ic {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #fdecec;
+    color: var(--red);
+    display: grid;
+    place-items: center;
+  }
+  small {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  address {
+    font-style: normal;
+  }
+  b {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .map {
+    display: block;
+    width: 100%;
+    height: 220px;
+    border: 0;
+    border-radius: 12px;
+    background: #f2f2f4;
+  }
+
+  .cta {
+    padding: 0 0 112px;
+    background: var(--light);
+  }
+  .cta-box {
+    background: var(--red);
+    border-radius: 22px;
+    padding: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -100px;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    border: 60px solid rgba(255, 255, 255, 0.07);
+  }
+  .cta-box h2 {
+    font-size: clamp(32px, 4vw, 50px);
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    max-width: 620px;
+    position: relative;
+  }
+  .cta-box p {
+    opacity: 0.9;
+    margin-top: 10px;
+    position: relative;
+  }
+  .cta-box .btn {
+    position: relative;
+    background: #fff;
+    color: var(--ink);
+    height: 58px;
+    padding: 0 28px;
+    font-size: 16px;
+  }
+  .cta-box .btn:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  @media (max-width: 920px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .cta-box {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 40px 32px;
+    }
+  }
+  @media (max-width: 560px) {
+    .panel {
+      padding: 24px 16px;
+    }
+    .contact-list a {
+      padding: 12px;
+      gap: 12px;
+    }
+    b {
+      font-size: 15px;
+    }
+    .cta-box {
+      padding: 32px 20px;
+    }
+    .cta-box .btn {
+      width: 100%;
+    }
+  }
+</style>

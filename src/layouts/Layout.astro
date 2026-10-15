@@ -1,0 +1,76 @@
+---
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/barlow-semi-condensed/latin-600.css';
+import '@fontsource/barlow-semi-condensed/latin-700.css';
+import '@fontsource/barlow-semi-condensed/latin-800.css';
+import '@fontsource/barlow-semi-condensed/latin-700-italic.css';
+import '@fontsource/barlow-semi-condensed/latin-800-italic.css';
+import '../styles/global.css';
+import JsonLd from '../components/JsonLd.astro';
+import { business } from '../data/business';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { city, state } = business.address;
+const {
+  title = `Auto Elétrica em ${city}/${state} | ${business.name} e Som Automotivo`,
+  description = `${business.name} em ${city}/${state}: elétrica completa para carros, motos e caminhões, diagnóstico, injeção eletrônica, ar-condicionado e instalação de som. ${business.phone.display}.`,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og-image.jpg', Astro.site);
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0b0b0d" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${business.name} — Auto Elétrica e Som`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <JsonLd />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <!-- Gradiente do ícone do Instagram (referenciado via url(#igGrad)). -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#feda75"></stop><stop offset=".35" stop-color="#fa7e1e"></stop>
+          <stop offset=".65" stop-color="#d62976"></stop><stop offset="1" stop-color="#962fbf"></stop>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <slot />
+
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>

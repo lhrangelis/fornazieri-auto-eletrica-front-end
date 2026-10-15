@@ -1,0 +1,58 @@
+---
+import { business, services, weekHours } from '../data/business';
+import { fmt } from '../lib/hours';
+
+const site = Astro.site?.href ?? '/';
+const schemaDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+// Agrupa dias com o mesmo horário em uma única especificação.
+const byHours = new Map<string, string[]>();
+weekHours.forEach((h, d) => {
+  if (!h) return;
+  const key = `${fmt(h[0])}-${fmt(h[1])}`;
+  byHours.set(key, [...(byHours.get(key) ?? []), schemaDays[d]]);
+});
+
+const data = {
+  '@context': 'https://schema.org',
+  '@type': 'AutoRepair',
+  '@id': `${site}#oficina`,
+  name: business.name,
+  legalName: business.legalName,
+  description:
+    'Auto elétrica e som automotivo: elétrica completa para carros, motos e caminhões, diagnóstico, injeção eletrônica, ar-condicionado e instalação de som.',
+  url: site,
+  logo: new URL('/apple-touch-icon.png', site).href,
+  image: new URL('/og-image.jpg', site).href,
+  telephone: business.phone.e164,
+  foundingDate: String(business.foundingYear),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: business.address.street,
+    addressLocality: business.address.city,
+    addressRegion: business.address.state,
+    postalCode: business.address.postalCode,
+    addressCountry: 'BR',
+  },
+  ...(business.geo && {
+    geo: { '@type': 'GeoCoordinates', latitude: business.geo.lat, longitude: business.geo.lng },
+  }),
+  hasMap: business.maps.link,
+  areaServed: `${business.address.city}/${business.address.state}`,
+  openingHoursSpecification: [...byHours].map(([key, days]) => {
+    const [opens, closes] = key.split('-');
+    return { '@type': 'OpeningHoursSpecification', dayOfWeek: days, opens, closes };
+  }),
+  sameAs: [business.instagram.url],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Serviços',
+    itemListElement: services.map((s) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: s.title, description: s.description },
+    })),
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(data)} />

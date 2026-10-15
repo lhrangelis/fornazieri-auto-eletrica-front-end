@@ -1,0 +1,198 @@
+---
+import Icon from './Icon.astro';
+
+const checks = ['Bateria e carga', 'Alternador e partida', 'Sensores e injeção', 'Iluminação e painel'];
+const steps = [
+  { title: 'Fale com a gente', text: 'Conte o que está acontecendo pelo WhatsApp ou telefone.' },
+  { title: 'Diagnóstico', text: 'Avaliamos o veículo e localizamos a origem do problema.' },
+  { title: 'Orçamento claro', text: 'Você aprova o serviço sabendo exatamente o que será feito.' },
+  { title: 'Serviço e entrega', text: 'Executamos, testamos e devolvemos o veículo funcionando.' },
+];
+---
+
+<section class="dark" id="como-funciona" aria-labelledby="como-title">
+  <div class="wrap split">
+    <div class="panel rv">
+      <div class="gauge" aria-hidden="true">
+        <svg viewBox="0 0 300 170">
+          <path d="M30 150a120 120 0 0 1 240 0" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="14" stroke-linecap="round"></path>
+          <path class="arc" d="M30 150a120 120 0 0 1 240 0" fill="none" stroke="#e3141e" stroke-width="14" stroke-linecap="round" stroke-dasharray="377"></path>
+          <g stroke="rgba(255,255,255,.35)" stroke-width="2">
+            <line x1="150" y1="18" x2="150" y2="30"></line><line x1="56" y1="56" x2="65" y2="65"></line>
+            <line x1="244" y1="56" x2="235" y2="65"></line><line x1="18" y1="150" x2="30" y2="150"></line>
+            <line x1="282" y1="150" x2="270" y2="150"></line>
+          </g>
+          <g class="needle"><line x1="150" y1="150" x2="150" y2="52" stroke="#fff" stroke-width="3" stroke-linecap="round"></line></g>
+          <circle cx="150" cy="150" r="9" fill="#fff"></circle><circle cx="150" cy="150" r="4" fill="#e3141e"></circle>
+        </svg>
+        <div class="lbl">Sistema OK</div>
+        <div class="sub">Checagem elétrica completa</div>
+      </div>
+      <ul class="checks" aria-label="O que verificamos">
+        {checks.map((c) => <li><Icon name="check" size={18} />{c}</li>)}
+      </ul>
+    </div>
+    <div class="rv">
+      <p class="eyebrow">Como funciona</p>
+      <h2 class="title" id="como-title">Do diagnóstico à entrega, sem complicação</h2>
+      <p>
+        Problema elétrico raramente é óbvio. Por isso, cada atendimento começa entendendo o defeito — e só depois
+        partimos para a solução.
+      </p>
+      <ol class="steps">
+        {
+          steps.map((s, i) => (
+            <li class="step">
+              <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <b>{s.title}</b>
+                <span>{s.text}</span>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .split > * {
+    min-width: 0;
+  }
+  .panel {
+    background: linear-gradient(160deg, #1c1c20, #111113);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    right: -120px;
+    top: -120px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(227, 20, 30, 0.25), transparent 70%);
+  }
+  .gauge {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .gauge svg {
+    width: 100%;
+    max-width: 340px;
+  }
+  /* Estado final por padrão (sem JS); com JS, anima ao entrar na tela. */
+  .arc {
+    stroke-dashoffset: 45;
+    transition: stroke-dashoffset 1.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .needle {
+    transform-origin: 150px 150px;
+    transform: rotate(62deg);
+    transition: transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  :global(.js) .panel:not(:global(.in)) .arc {
+    stroke-dashoffset: 377;
+  }
+  :global(.js) .panel:not(:global(.in)) .needle {
+    transform: rotate(-90deg);
+  }
+  .lbl {
+    font-family: var(--head);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 22px;
+    text-transform: uppercase;
+    margin-top: -6px;
+  }
+  .sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .checks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 32px;
+    position: relative;
+  }
+  .checks li {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .checks :global(svg.i) {
+    color: var(--red);
+  }
+  h2 {
+    margin: 14px 0 20px;
+  }
+  .split p {
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .steps {
+    list-style: none;
+    margin-top: 32px;
+    display: grid;
+    gap: 4px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+  }
+  .step:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .num {
+    font-family: var(--head);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 30px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .step b {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .step span:not(.num) {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  @media (max-width: 920px) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .checks {
+      grid-template-columns: 1fr;
+    }
+    .panel {
+      padding: 28px 20px;
+    }
+  }
+</style>

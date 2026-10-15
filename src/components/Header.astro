@@ -1,0 +1,167 @@
+---
+import Brand from './Brand.astro';
+import Icon from './Icon.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import ExternalHint from './ExternalHint.astro';
+import { waLink } from '../data/business';
+
+const links = [
+  { href: '#servicos', label: 'Serviços' },
+  { href: '#como-funciona', label: 'Como funciona' },
+  { href: '#som', label: 'Som automotivo' },
+  { href: '#contato', label: 'Horário e contato' },
+];
+---
+
+<header class="nav">
+  <div class="wrap">
+    <Brand eager />
+    <nav class="menu" aria-label="Principal">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <a class="btn btn-red nav-cta" href={waLink()} target="_blank" rel="noopener" data-track="whatsapp">
+      <WhatsAppIcon size={18} />Orçamento<ExternalHint />
+    </a>
+    <button class="burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span class="open"><Icon name="menu" /></span>
+      <span class="close"><Icon name="close" /></span>
+    </button>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Menu móvel" hidden>
+    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    <a class="btn btn-red" href={waLink()} target="_blank" rel="noopener" data-track="whatsapp">
+      <WhatsAppIcon size={18} />Chamar no WhatsApp<ExternalHint />
+    </a>
+  </nav>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('header.nav')!;
+  const burger = header.querySelector<HTMLButtonElement>('.burger')!;
+  const menu = header.querySelector<HTMLElement>('#mobile-menu')!;
+
+  const setOpen = (open: boolean) => {
+    menu.hidden = !open;
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  };
+
+  burger.addEventListener('click', () => setOpen(menu.hidden));
+  menu.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.hidden) {
+      setOpen(false);
+      burger.focus();
+    }
+  });
+  matchMedia('(min-width: 921px)').addEventListener('change', (e) => e.matches && setOpen(false));
+</script>
+
+<style>
+  header.nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(11, 11, 13, 0.85);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .wrap {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: var(--header-h);
+    gap: 24px;
+  }
+  .menu {
+    display: flex;
+    gap: 32px;
+    font-size: 15px;
+    color: #d4d4d8;
+  }
+  .menu a {
+    position: relative;
+    padding: 6px 0;
+  }
+  .menu a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: 0;
+    height: 2px;
+    background: var(--red);
+    transition: right 0.25s;
+  }
+  .menu a:hover {
+    color: #fff;
+  }
+  .menu a:hover::after {
+    right: 0;
+  }
+  .nav-cta,
+  .burger {
+    justify-self: end;
+  }
+  .nav-cta {
+    height: 44px;
+    font-size: 14px;
+    padding: 0 18px;
+  }
+  .burger {
+    display: none;
+    background: none;
+    border: 1px solid var(--line-2);
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .burger span {
+    display: inline-flex;
+  }
+  .burger .close,
+  .burger[aria-expanded='true'] .open {
+    display: none;
+  }
+  .burger[aria-expanded='true'] .close {
+    display: inline-flex;
+  }
+  .mobile-menu {
+    border-top: 1px solid var(--line);
+    padding: 12px 24px 24px;
+    background: var(--bg);
+  }
+  .mobile-menu[hidden] {
+    display: none;
+  }
+  .mobile-menu a:not(.btn) {
+    display: block;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 16px;
+  }
+  .mobile-menu .btn {
+    display: flex;
+    width: 100%;
+    margin-top: 18px;
+  }
+  @media (max-width: 920px) {
+    .wrap {
+      grid-template-columns: 1fr auto;
+    }
+    .menu,
+    .nav-cta {
+      display: none;
+    }
+    .burger {
+      display: inline-flex;
+    }
+  }
+</style>

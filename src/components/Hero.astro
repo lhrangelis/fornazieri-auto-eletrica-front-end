@@ -1,0 +1,284 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.webp';
+import Icon from './Icon.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import ExternalHint from './ExternalHint.astro';
+import { business, waLink } from '../data/business';
+import { groupedHours } from '../lib/hours';
+
+const { city, state } = business.address;
+// Texto exibido sem JS (ou antes de o JS calcular o status em tempo real).
+const fallback = groupedHours()
+  .filter((g) => g.hours !== 'Fechado')
+  .map((g) => `${g.label} ${g.hours}`)
+  .join(' · ');
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap">
+    <div>
+      <p class="status" data-open-status aria-live="polite">
+        <span class="dot" aria-hidden="true"></span><span data-text>{fallback}</span>
+      </p>
+      <p class="eyebrow">Auto elétrica &amp; som automotivo</p>
+      <h1 id="hero-title">
+        Elétrica completa para <em>carros, motos</em> e caminhões
+        <span class="city">em {city}/{state}</span>
+      </h1>
+      <p class="lead">
+        Diagnóstico, injeção eletrônica, baterias, ar-condicionado, iluminação e instalação de som — tudo em um só
+        lugar, com atendimento de quem conhece o seu veículo.
+      </p>
+      <div class="ctas">
+        <a class="btn btn-red" href={waLink()} target="_blank" rel="noopener" data-track="whatsapp">
+          <WhatsAppIcon />Chamar no WhatsApp<ExternalHint />
+        </a>
+        <a class="btn btn-ghost btn-ig" href={business.instagram.url} target="_blank" rel="noopener" data-track="instagram">
+          <Icon name="instagram" size={20} />Instagram<ExternalHint />
+        </a>
+        <a class="btn btn-ghost" href="#servicos">Ver serviços<Icon name="arrow" size={18} /></a>
+      </div>
+      <ul class="tags" aria-label="Veículos atendidos">
+        <li class="tag"><Icon name="car" />Carros</li>
+        <li class="tag"><Icon name="moto" />Motos</li>
+        <li class="tag"><Icon name="truck" />Caminhões</li>
+        <li class="tag"><Icon name="speaker" />Som</li>
+      </ul>
+    </div>
+
+    <div class="visual">
+      <div class="ring r2" aria-hidden="true"></div>
+      <div class="ring" aria-hidden="true"></div>
+      <Image
+        src={logo}
+        alt={`Logo da ${business.name} e Som Automotivo`}
+        width={424}
+        height={424}
+        loading="eager"
+        fetchpriority="high"
+        class="logo"
+      />
+      <div class="float f2" aria-hidden="true">
+        <div class="ic"><Icon name="pulse" /></div>
+        <div><b>Diagnóstico eletrônico</b><small>Scanner e testes elétricos</small></div>
+      </div>
+      <div class="float f1">
+        <div class="ic"><Icon name="clock" /></div>
+        <div><b data-today-label>Seg a Sáb</b><small>Horário de atendimento</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 88px 0 96px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(700px 420px at 78% 40%, rgba(227, 20, 30, 0.16), transparent 70%),
+      linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.4));
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 65%);
+    -webkit-mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 65%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .wrap {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .wrap > * {
+    min-width: 0;
+  }
+  .status {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px 8px 12px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    font-size: 13px;
+    color: #d4d4d8;
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 28px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+  }
+  .status:global(.is-open) .dot {
+    background: var(--green);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+  }
+  .status:global(.is-closed) .dot {
+    background: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.18);
+  }
+  h1 {
+    font-size: clamp(44px, 6.2vw, 80px);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-style: italic;
+    margin: 18px 0 22px;
+  }
+  h1 em {
+    color: var(--red);
+    font-style: italic;
+  }
+  .city {
+    display: block;
+    margin-top: 12px;
+    font-size: 0.4em;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .lead {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 540px;
+  }
+  .ctas {
+    display: flex;
+    gap: 12px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+  .btn-ig :global(svg.i) {
+    stroke: url(#igGrad);
+  }
+  .tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 44px;
+    flex-wrap: wrap;
+  }
+
+  .visual {
+    position: relative;
+    justify-self: center;
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 1;
+  }
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+  }
+  .ring.r2 {
+    inset: -28px;
+    border-style: dashed;
+    border-color: var(--line);
+    animation: spin 80s linear infinite;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .logo {
+    position: absolute;
+    inset: 18px;
+    width: calc(100% - 36px);
+    height: calc(100% - 36px);
+    border-radius: 50%;
+    box-shadow:
+      0 30px 80px -20px rgba(227, 20, 30, 0.45),
+      0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+  .float {
+    position: absolute;
+    background: rgba(19, 19, 22, 0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line-2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.8);
+  }
+  .float .ic {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: var(--red-soft);
+    color: var(--red);
+    display: grid;
+    place-items: center;
+  }
+  .float b {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .float small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .f1 {
+    left: -36px;
+    bottom: 56px;
+  }
+  .f2 {
+    right: -28px;
+    top: 40px;
+  }
+
+  @media (max-width: 1080px) {
+    .f1 {
+      left: 0;
+    }
+    .f2 {
+      right: 0;
+    }
+  }
+  @media (max-width: 920px) {
+    .hero {
+      padding: 56px 0 72px;
+    }
+    .wrap {
+      grid-template-columns: 1fr;
+    }
+    .visual {
+      max-width: 360px;
+      margin-top: 16px;
+    }
+  }
+  @media (max-width: 560px) {
+    .ctas .btn {
+      width: 100%;
+    }
+    .float {
+      display: none;
+    }
+    .ring.r2 {
+      inset: -12px;
+    }
+  }
+</style>
